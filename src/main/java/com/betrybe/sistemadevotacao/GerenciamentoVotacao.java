@@ -15,6 +15,10 @@ public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
   private ArrayList<PessoaEleitora> pessoasEleitoras;
   private ArrayList<String> cpfsComputados;
 
+  /**
+   * class GerenciamentoVotacao implements GerenciamentoVotacaoInterface.
+   */
+
   public GerenciamentoVotacao() {
     this.pessoasCandidatas = new ArrayList<>();
     this.pessoasEleitoras = new ArrayList<>();
@@ -52,11 +56,33 @@ public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
 
   @Override
   public void votar(String cpfPessoaEleitora, int numeroPessoaCandidata) {
+    if (!cpfsComputados.isEmpty()) {
+      for (PessoaEleitora eleitor : pessoasEleitoras) {
+        if (cpfPessoaEleitora.equals(eleitor.getCpf())) {
+          System.out.println("Pessoa eleitora já votou!");
+        }
+      }
+    }
 
+    for (PessoaCandidata candidato : pessoasCandidatas) {
+      if (candidato.getNumero() == numeroPessoaCandidata) {
+        candidato.receberVoto();
+        cpfsComputados.add(cpfPessoaEleitora);
+      }
+    }
   }
 
   @Override
   public void mostrarResultado() {
-
+    if (cpfsComputados.isEmpty()) {
+      System.out.println("É preciso ter pelo menos um voto para mostrar o resultado.");
+    }
+    for (PessoaCandidata candidato : pessoasCandidatas) {
+      System.out.println("Nome: " + candidato.getNome()
+          + " - " + candidato.getVotos() + " votos " + "( " + Math.round(
+          (float) (candidato.getVotos() * 100) / cpfsComputados.size()) + " )");
+    }
+    System.out.println("Total de votos: " + cpfsComputados.size());
   }
+
 }
